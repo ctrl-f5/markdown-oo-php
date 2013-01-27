@@ -76,11 +76,12 @@ class Filter_Link extends Filter
         unset($link, $match, $no, $line);
 
         foreach($text as $no => $line) {
+            $self = $this;
             $line->gist = preg_replace_callback(
                 '/\[(.*?)\]\((.*?)(\s+"[\w ]+")?\)/uS',
-                function($match) {
+                function($match) use ($self) {
                     if (!isset($match[3])) $match[3] = null;
-                    return $this->buildHtml($match[1], $match[2], $match[3]);
+                    return $self->buildHtml($match[1], $match[2], $match[3]);
                 },
                 $line->gist
             );
@@ -101,7 +102,7 @@ class Filter_Link extends Filter
         return $text;
     }
 
-    protected function buildHtml($content, $href, $title = null)
+    public function buildHtml($content, $href, $title = null)
     {
         $link = '<a href="' . trim($href) . '"';
         if (!empty($title)) {
